@@ -41,4 +41,4 @@ jobs:
     steps:
       - name: Deploy prod
         run: |
-          echo "Deployment complete" 
+          echo "Deployment completed"
