@@ -1,0 +1,44 @@
+---
+name: ci
+
+on:
+  push:
+    branches:
+      - main
+      - testing
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: test1
+        run: |
+          echo hi
+
+  test-approval:
+    needs: [build]
+    runs-on: ubuntu-latest
+    environment: test-approval
+    steps:
+      - name: Manual approval checkpoint
+        run: echo "Test deployment ready for review"
+
+  stop-test-instance:
+    needs: [test-approval]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Stop EC2 instance
+        run: |
+          echo "Stopping instance..."
+
+  deploy-prod:
+    needs: [test-approval]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Deploy prod
+        run: |
+          echo "Deployment complete" 
